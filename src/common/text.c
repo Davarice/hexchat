@@ -2015,7 +2015,7 @@ text_color_of (char *name)
 
 void
 text_emit (int index, session *sess, char *a, char *b, char *c, char *d,
-			  time_t timestamp)
+			  time_t timestamp, char *tags)
 {
 	char *word[PDIWORDS];
 	int i;
@@ -2042,7 +2042,7 @@ text_emit (int index, session *sess, char *a, char *b, char *c, char *d,
 	/* We want to ignore the tab state if the plugin emits new events
 	 * and restore it if it doesn't eat the current one */
 	sess->tab_state = plugin_state;
-	if (plugin_emit_print (sess, word, timestamp))
+	if (plugin_emit_print (sess, word, timestamp, tags))
 		return;
 
 	/* The plugin may have changed the state which we should respect.
@@ -2128,14 +2128,14 @@ text_find_format_string (char *name)
 
 int
 text_emit_by_name (char *name, session *sess, time_t timestamp,
-				   char *a, char *b, char *c, char *d)
+				   char *a, char *b, char *c, char *d, char *tags)
 {
 	int i = 0;
 
 	i = pevent_find (name, &i);
 	if (i >= 0)
 	{
-		text_emit (i, sess, a, b, c, d, timestamp);
+		text_emit (i, sess, a, b, c, d, timestamp, tags);
 		return 1;
 	}
 

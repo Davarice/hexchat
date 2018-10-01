@@ -74,7 +74,7 @@ void inbound_away_notify (server *serv, char *nick, char *reason,
 void inbound_login_start (session *sess, char *nick, char *servname,
 								  const message_tags_data *tags_data);
 void inbound_login_end (session *sess, char *text,
-								const message_tags_data *tags_data);
+								const message_tags_data *tags_data, char *tags);
 void inbound_chanmsg (server *serv, session *sess, char *chan, char *from,
 							 char *text, char fromme, int id, 
 							 const message_tags_data *tags_data);
@@ -89,14 +89,14 @@ void inbound_newnick (server *serv, char *nick, char *newnick, int quiet,
 							 const message_tags_data *tags_data);
 void inbound_identified (server *serv);
 void inbound_cap_ack (server *serv, char *nick, char *extensions,
-							 const message_tags_data *tags_data);
+							 const message_tags_data *tags_data, char *tags);
 void inbound_cap_ls (server *serv, char *nick, char *extensions,
-							const message_tags_data *tags_data);
+							const message_tags_data *tags_data, char *tags);
 void inbound_cap_nak (server *serv, const message_tags_data *tags_data);
 void inbound_cap_list (server *serv, char *nick, char *extensions,
-							  const message_tags_data *tags_data);
+							  const message_tags_data *tags_data, char *tags);
 void inbound_cap_del (server *serv, char *nick, char *extensions,
-							  const message_tags_data *tags_data);
+							  const message_tags_data *tags_data, char *tags);
 void inbound_sasl_authenticate (server *serv, char *data);
 void inbound_sasl_error (server *serv);
 void do_dns (session *sess, char *nick, char *host,

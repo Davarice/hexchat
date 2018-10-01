@@ -512,7 +512,7 @@ dcc_write_chat (char *nick, char *text)
 				1 - the dcc is closed! */
 
 static int
-dcc_chat_line (struct DCC *dcc, char *line)
+dcc_chat_line (char *tags, struct DCC *dcc, char *line)
 {
 	session *sess;
 	char *word[PDIWORDS];
@@ -537,7 +537,7 @@ dcc_chat_line (struct DCC *dcc, char *line)
 	for (i = 5; i < PDIWORDS; i++)
 		word[i] = "\000";
 
-	ret = plugin_emit_print (sess, word, 0);
+	ret = plugin_emit_print (sess, word, 0, tags);
 
 	/* did the plugin close it? */
 	if (!g_slist_find (dcc_list, dcc))
@@ -571,7 +571,7 @@ dcc_chat_line (struct DCC *dcc, char *line)
 }
 
 static gboolean
-dcc_read_chat (GIOChannel *source, GIOCondition condition, struct DCC *dcc)
+dcc_read_chat (char *tags, GIOChannel *source, GIOCondition condition, struct DCC *dcc)
 {
 	int i, len, dead;
 	char portbuf[32];
@@ -614,7 +614,7 @@ dcc_read_chat (GIOChannel *source, GIOCondition condition, struct DCC *dcc)
 				break;
 			case '\n':
 				dcc->dccchat->linebuf[dcc->dccchat->pos] = 0;
-				dead = dcc_chat_line (dcc, dcc->dccchat->linebuf);
+				dead = dcc_chat_line (tags, dcc, dcc->dccchat->linebuf);
 
 				if (dead || !dcc->dccchat) /* the dcc has been closed, don't use (DCC *)! */
 					return TRUE;

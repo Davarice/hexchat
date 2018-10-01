@@ -645,11 +645,12 @@ plugin_emit_server (session *sess, char *name, char *word[], char *word_eol[],
 /* see if any plugins are interested in this print event */
 
 int
-plugin_emit_print (session *sess, char *word[], time_t server_time)
+plugin_emit_print (session *sess, char *word[], time_t server_time, char *tags)
 {
 	hexchat_event_attrs attrs;
 
 	attrs.server_time_utc = server_time;
+	attrs.ircv3_line = tags;
 
 	return plugin_hook_run (sess, word[0], word, NULL, &attrs,
 							HOOK_PRINT | HOOK_PRINT_ATTRS);

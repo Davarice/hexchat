@@ -24,10 +24,10 @@
 #define HEXCHAT_TEXT_H
 
 /* timestamp is non-zero if we are using server-time */
-#define EMIT_SIGNAL_TIMESTAMP(i, sess, a, b, c, d, e, timestamp) \
-	text_emit(i, sess, a, b, c, d, timestamp)
-#define EMIT_SIGNAL(i, sess, a, b, c, d, e) \
-	text_emit(i, sess, a, b, c, d, 0)
+#define EMIT_SIGNAL_TIMESTAMP(i, sess, a, b, c, d, e, timestamp, tags) \
+	text_emit(i, sess, a, b, c, d, timestamp, tags)
+#define EMIT_SIGNAL(i, sess, a, b, c, d, e, tags) \
+	text_emit(i, sess, a, b, c, d, 0, tags)
 
 struct text_event
 {
@@ -54,9 +54,9 @@ int pevent_load (char *filename);
 void pevent_make_pntevts (void);
 int text_color_of (char *name);
 void text_emit (int index, session *sess, char *a, char *b, char *c, char *d,
-		time_t timestamp);
+		time_t timestamp, char *tags);
 int text_emit_by_name (char *name, session *sess, time_t timestamp,
-					   char *a, char *b, char *c, char *d);
+					   char *a, char *b, char *c, char *d, char *tags);
 gchar *text_convert_invalid (const gchar* text, gssize len, GIConv converter, const gchar *fallback, gsize *len_out);
 gchar *text_fixup_invalid_utf8 (const gchar* text, gssize len, gsize *len_out);
 int get_stamp_str (char *fmt, time_t tim, char **ret);

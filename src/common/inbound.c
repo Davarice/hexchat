@@ -1553,7 +1553,7 @@ inbound_nickserv_login (server *serv)
 }
 
 void
-inbound_login_end (session *sess, char *text, const message_tags_data *tags_data)
+inbound_login_end (session *sess, char *text, const message_tags_data *tags_data, char *tags)
 {
 	GSList *cmdlist;
 	commandentry *cmd;
@@ -1615,12 +1615,12 @@ inbound_login_end (session *sess, char *text, const message_tags_data *tags_data
 	{
 		serv->motd_skipped = TRUE;
 		EMIT_SIGNAL_TIMESTAMP (XP_TE_MOTDSKIP, serv->server_session, NULL, NULL,
-									  NULL, NULL, 0, tags_data->timestamp);
+									  NULL, NULL, 0, tags_data->timestamp, tags);
 		return;
 	}
 
 	EMIT_SIGNAL_TIMESTAMP (XP_TE_MOTD, serv->server_session, text, NULL, NULL,
-								  NULL, 0, tags_data->timestamp);
+								  NULL, 0, tags_data->timestamp, tags);
 }
 
 void
@@ -1689,20 +1689,20 @@ inbound_toggle_caps (server *serv, const char *extensions_str, gboolean enable)
 
 void
 inbound_cap_ack (server *serv, char *nick, char *extensions,
-					  const message_tags_data *tags_data)
+					  const message_tags_data *tags_data, char *tags)
 {
 	EMIT_SIGNAL_TIMESTAMP (XP_TE_CAPACK, serv->server_session, nick, extensions,
-								  NULL, NULL, 0, tags_data->timestamp);
+								  NULL, NULL, 0, tags_data->timestamp, tags);
 
 	inbound_toggle_caps (serv, extensions, TRUE);
 }
 
 void
 inbound_cap_del (server *serv, char *nick, char *extensions,
-					 const message_tags_data *tags_data)
+					 const message_tags_data *tags_data, char *tags)
 {
 	EMIT_SIGNAL_TIMESTAMP (XP_TE_CAPDEL, serv->server_session, nick, extensions,
-								  NULL, NULL, 0, tags_data->timestamp);
+								  NULL, NULL, 0, tags_data->timestamp, tags);
 
 	inbound_toggle_caps (serv, extensions, FALSE);
 }
@@ -1764,7 +1764,7 @@ get_supported_mech (server *serv, const char *list)
 
 void
 inbound_cap_ls (server *serv, char *nick, char *extensions_str,
-					 const message_tags_data *tags_data)
+					 const message_tags_data *tags_data, char *tags)
 {
 	char buffer[500];	/* buffer for requesting capabilities and emitting the signal */
 	gboolean want_cap = FALSE; /* format the CAP REQ string based on previous capabilities being requested or not */
@@ -1784,7 +1784,7 @@ inbound_cap_ls (server *serv, char *nick, char *extensions_str,
 	}
 
 	EMIT_SIGNAL_TIMESTAMP (XP_TE_CAPLIST, serv->server_session, nick,
-								  extensions_str, NULL, NULL, 0, tags_data->timestamp);
+								  extensions_str, NULL, NULL, 0, tags_data->timestamp, tags);
 
 	extensions = g_strsplit (extensions_str, " ", 0);
 
@@ -1839,7 +1839,7 @@ inbound_cap_ls (server *serv, char *nick, char *extensions_str,
 		/* buffer + 9 = emit buffer without "CAP REQ :" */
 		EMIT_SIGNAL_TIMESTAMP (XP_TE_CAPREQ, serv->server_session,
 									  buffer + 9, NULL, NULL, NULL, 0,
-									  tags_data->timestamp);
+									  tags_data->timestamp, tags);
 		tcp_sendf (serv, "%s\r\n", g_strchomp (buffer));
 	}
 	if (!want_sasl && !serv->waiting_on_cap)
@@ -1862,7 +1862,7 @@ inbound_cap_nak (server *serv, const message_tags_data *tags_data)
 
 void
 inbound_cap_list (server *serv, char *nick, char *extensions,
-						const message_tags_data *tags_data)
+						const message_tags_data *tags_data, char *tags)
 {
 	if (g_str_has_prefix (extensions, "* "))
 	{
@@ -1870,7 +1870,7 @@ inbound_cap_list (server *serv, char *nick, char *extensions,
 		extensions += extensions[0] == ':' ? 1 : 0;
 	}
 	EMIT_SIGNAL_TIMESTAMP (XP_TE_CAPACK, serv->server_session, nick, extensions,
-								  NULL, NULL, 0, tags_data->timestamp);
+								  NULL, NULL, 0, tags_data->timestamp, tags);
 }
 
 void
@@ -1914,7 +1914,7 @@ inbound_sasl_authenticate (server *serv, char *data)
 
 		
 		EMIT_SIGNAL_TIMESTAMP (XP_TE_SASLAUTH, serv->server_session, user, (char*)mech,
-								NULL,	NULL,	0,	0);
+								NULL,	NULL,	0,	0,	"");
 }
 
 void
