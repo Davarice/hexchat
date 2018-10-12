@@ -45,6 +45,8 @@
 #include "url.h"
 #include "servlist.h"
 
+#include "hashtable.h"
+
 static void
 irc_login (server *serv, char *user, char *realname)
 {
@@ -1506,6 +1508,7 @@ handle_message_tags (server *serv, const char *tags_str,
 	{
 		char *key = tags[i];
 		char *value = strchr (tags[i], '=');
+		guint32 hash = str_hash (key);
 
 		if (!value)
 			continue;
@@ -1530,6 +1533,9 @@ irc_inline (server *serv, char *buf, int len)
 	char *word_eol[PDIWORDS+1];
 	char *pdibuf;
 	char *fbuf;
+
+	ht_hash_table* ht = ht_new();
+
 	message_tags_data tags_data = MESSAGE_TAGS_DATA_INIT;
 
 	pdibuf = g_malloc (len + 1);
@@ -1615,6 +1621,7 @@ irc_inline (server *serv, char *buf, int len)
 xit:
 	g_free (pdibuf);
 	g_free (fbuf);
+// 	ht_del_hash_table(ht);
 }
 
 void
